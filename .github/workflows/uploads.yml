@@ -32,20 +32,24 @@ jobs:
       - name: Archive Source
         shell: sh
         run: |
+          echo ::group::Archive gzip artifact
           mkdir -p "$RUNNER_TEMP/release"
           export ARCHIVE_NAME="$RUNNER_TEMP/release/$REPO_NAME-$GITHUB_REF_NAME.tar"
           tar \
           --dereference --hard-dereference \
           --directory "$GITHUB_WORKSPACE" \
-          -cvfz "$ARCHIVE_NAME.gz" \
+          -cvzf "$ARCHIVE_NAME.gz" \
           .
           sha256sum "$ARCHIVE_NAME.gz" > "$ARCHIVE_NAME.gz.sha256sum"
+          echo ::endgroup::
+          echo ::group::Archive bz2 artifact
           tar \
           --dereference --hard-dereference \
           --directory "$GITHUB_WORKSPACE" \
-          -cvfj "$ARCHIVE_NAME.bz2" \
+          -cvjf "$ARCHIVE_NAME.bz2" \
           .
           sha256sum "$ARCHIVE_NAME.bz2" > "$ARCHIVE_NAME.bz2.sha256sum"
+          echo ::endgroup::
 
       - name: Upload Files
         shell: sh
