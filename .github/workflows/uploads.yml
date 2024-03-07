@@ -14,9 +14,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name || github.sha }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-
 jobs:
   # create compressed tarballs and upload them to the published release
   upload:
@@ -32,12 +29,12 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Archive and upload Source
+      - name: Archive Source
         env:
           GH_TOKEN: ${{ github.token }}
-        shell: sh
         run: |
           mkdir -p "$RUNNER_TEMP/release"
+
           echo ::group::Archive gzip artifact
           export ARCHIVE_NAME="$RUNNER_TEMP/release/$REPO_NAME-$GITHUB_REF_NAME.tar"
           tar \
@@ -48,7 +45,7 @@ jobs:
           sha256sum "$ARCHIVE_NAME.gz" > "$ARCHIVE_NAME.gz.sha256sum"
           echo ::endgroup::
 
-          echo ::group::Archive bz2 artifact
+            echo ::group::Archive bz2 artifact
           tar \
           --dereference --hard-dereference \
           --directory "$GITHUB_WORKSPACE" \
@@ -57,9 +54,9 @@ jobs:
           sha256sum "$ARCHIVE_NAME.bz2" > "$ARCHIVE_NAME.bz2.sha256sum"
           echo ::endgroup::
 
-          echo ::group::Upload files
+      - name: Upload Archives
+        run: |
           gh release upload \
           --clobber "$GITHUB_REF_NAME" \
           --repo "$GITHUB_REPOSITORY" \
           $RUNNER_TEMP/release/*
-          echo ::endgroup::
