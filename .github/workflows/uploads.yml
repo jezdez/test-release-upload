@@ -43,16 +43,16 @@ jobs:
           --directory "$GITHUB_WORKSPACE" \
           -cvzf "$ARCHIVE_NAME.gz" \
           .
-          sha256sum "$ARCHIVE_NAME.gz" > "$ARCHIVE_NAME.gz.sha256sum"
+          sha256sum "$ARCHIVE_NAME.gz" | awk '{print $1}' > "$ARCHIVE_NAME.gz.sha256sum"
           echo ::endgroup::
 
-            echo ::group::Archive bz2 artifact
+          echo ::group::Archive bz2 artifact
           tar \
           --dereference --hard-dereference \
           --directory "$GITHUB_WORKSPACE" \
           -cvjf "$ARCHIVE_NAME.bz2" \
           .
-          sha256sum "$ARCHIVE_NAME.bz2" > "$ARCHIVE_NAME.bz2.sha256sum"
+          sha256sum "$ARCHIVE_NAME.bz2" | awk '{print $1}' > "$ARCHIVE_NAME.bz2.sha256sum"
           echo ::endgroup::
 
       - name: Upload Archives
