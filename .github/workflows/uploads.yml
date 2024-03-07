@@ -32,8 +32,8 @@ jobs:
       - name: Archive Source
         shell: sh
         run: |
-          echo ::group::Archive gzip artifact
           mkdir -p "$RUNNER_TEMP/release"
+          echo ::group::Archive gzip artifact
           export ARCHIVE_NAME="$RUNNER_TEMP/release/$REPO_NAME-$GITHUB_REF_NAME.tar"
           tar \
           --dereference --hard-dereference \
