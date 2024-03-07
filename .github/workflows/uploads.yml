@@ -29,7 +29,9 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
 
-      - name: Archive Source
+      - name: Archive and upload Source
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: sh
         run: |
           mkdir -p "$RUNNER_TEMP/release"
@@ -42,6 +44,7 @@ jobs:
           .
           sha256sum "$ARCHIVE_NAME.gz" > "$ARCHIVE_NAME.gz.sha256sum"
           echo ::endgroup::
+
           echo ::group::Archive bz2 artifact
           tar \
           --dereference --hard-dereference \
@@ -51,13 +54,9 @@ jobs:
           sha256sum "$ARCHIVE_NAME.bz2" > "$ARCHIVE_NAME.bz2.sha256sum"
           echo ::endgroup::
 
-      - name: Upload Files
-        shell: sh
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release \
-          upload \
+          echo ::group::Upload files
+          gh release upload \
           --clobber "$GITHUB_REF_NAME" \
           --repo "$GITHUB_REPOSITORY" \
-          "$RUNNER_TEMP/release/*"
+          $RUNNER_TEMP/release/*
+          echo ::endgroup::
