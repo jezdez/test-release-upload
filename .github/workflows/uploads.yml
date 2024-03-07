@@ -36,7 +36,7 @@ jobs:
         run: |
           mkdir -p release
           git archive --prefix="${{ env.ARCHIVE_NAME }}/" --output "release/${{ env.ARCHIVE_NAME }}.tar.gz" HEAD
-          sha256sum "${{ env.ARCHIVE_NAME }}" | awk "{print $1}" > "release/${{ env.ARCHIVE_NAME }}.tar.gz.sha256sum"
+          sha256sum "${{ env.ARCHIVE_NAME }}.tar.gz" | awk "{print $1}" > "release/${{ env.ARCHIVE_NAME }}.tar.gz.sha256sum"
 
       - name: Upload Archives
         env:
